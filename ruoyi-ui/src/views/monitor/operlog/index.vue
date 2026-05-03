@@ -108,6 +108,16 @@
           v-hasPermi="['monitor:operlog:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="info"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImport"
+          v-hasPermi="['monitor:operlog:import']"
+        >导入</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -159,6 +169,8 @@
       @pagination="getList"
     />
 
+    <ExcelImportDialog ref="importRef" title="操作日志导入" action="/monitor/operlog/importData" template-action="/monitor/operlog/importTemplate" template-file-name="operlog_template" @success="getList" />
+
     <operlog-detail :visible.sync="detailVisible" :row="detailRow" />
   </div>
 </template>
@@ -166,10 +178,11 @@
 <script>
 import OperlogDetail from './detail'
 import { list, delOperlog, cleanOperlog } from "@/api/monitor/operlog"
+import ExcelImportDialog from "@/components/ExcelImportDialog"
 
 export default {
   name: "Operlog",
-  components: { OperlogDetail },
+  components: { OperlogDetail, ExcelImportDialog },
   dicts: ['sys_oper_type', 'sys_common_status'],
   data() {
     return {
@@ -272,6 +285,10 @@ export default {
       this.download('monitor/operlog/export', {
         ...this.queryParams
       }, `operlog_${new Date().getTime()}.xlsx`)
+    },
+    /** 导入按钮操作 */
+    handleImport() {
+      this.$refs.importRef.open()
     }
   }
 }

@@ -24,3 +24,26 @@ export function cleanOperlog() {
     method: 'delete'
   })
 }
+
+// 导入操作日志模板下载
+export function importTemplate() {
+  return request({
+    url: '/monitor/operlog/importTemplate',
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+
+// 导入操作日志
+export function importData(file) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return request({
+    url: '/monitor/operlog/importData',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
